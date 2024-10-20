@@ -24,7 +24,7 @@ public class UserLogin {
 	@NotEmpty(message = "Username not be null")
 	private String username; // Could be email
 	@NotEmpty(message = "password not be null")
-	private String hashedPassword;
+	private String password;
 	@OneToOne
 	@JoinColumn(name = "user_id")
 	private UserRegister user;

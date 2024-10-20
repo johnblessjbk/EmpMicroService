@@ -20,9 +20,9 @@ public class UserRegisterService {
 
 	public UserRegister addUser(UserRegister userRegister) {
 		UserLogin userLogin = new UserLogin();
-		userLogin.setUsername(userRegister.getEmail());
-		String hashedPassword = passwordEncoder.encode(userRegister.getPassword());
-		userLogin.setHashedPassword(hashedPassword);
+		userLogin.setUsername(userRegister.getUserLogin().getUsername());
+		String password = passwordEncoder.encode(userRegister.getUserLogin().getPassword());
+		userLogin.setPassword(password);
 
 		userRegister.setUserLogin(userLogin);
 		userLogin.setUser(userRegister);
