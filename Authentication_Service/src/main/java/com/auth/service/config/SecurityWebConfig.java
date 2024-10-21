@@ -22,7 +22,6 @@ import com.auth.service.jwtauth.JwtAuthenticationFilter;
 public class SecurityWebConfig {
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
-
 	@Autowired
 	private C_UserDetailsService customUserDetailsService;
 	
