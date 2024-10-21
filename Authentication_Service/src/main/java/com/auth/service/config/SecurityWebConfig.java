@@ -12,7 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.auth.service.exceptions.CustomAccessDeniedHandler;
 import com.auth.service.jwtauth.C_UserDetailsService;
+import com.auth.service.jwtauth.JwtAuthenticationEntryPoint;
 import com.auth.service.jwtauth.JwtAuthenticationFilter;
 
 @Configuration
@@ -23,7 +25,7 @@ public class SecurityWebConfig {
 
 	@Autowired
 	private C_UserDetailsService customUserDetailsService;
-
+	
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -39,17 +41,26 @@ public class SecurityWebConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain SecurityFilterChain(HttpSecurity http, 
+	                                               JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, 
+	                                               JwtAuthenticationFilter jwtAuthenticationFilter,
+	                                               CustomAccessDeniedHandler customAccessDeniedHandler) throws Exception {
 
-		http.csrf().disable()
-				.authorizeHttpRequests((requests) -> requests
-						.requestMatchers("/authenticate/**", "/v3/api-docs/**", "/swagger-ui/**",
-								"/swagger-resources/**", "/webjars/**", "/webjars/swagger-ui/**")
-						.permitAll()
-						.requestMatchers("/admin/**").hasRole("ADMIN")
-						.requestMatchers("/user/**").hasRole("USER")
-						.anyRequest().authenticated())
-				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-		return http.build();
+	    http.csrf().disable()
+	            .authorizeHttpRequests((requests) -> requests
+	                    .requestMatchers("/authenticate/**", "/v3/api-docs/**", "/swagger-ui/**",
+	                            "/swagger-resources/**", "/webjars/**", "/webjars/swagger-ui/**")
+	                    .permitAll()
+	                    .requestMatchers("/admin/**").hasAuthority("admin")  // Use ROLE_ prefix if necessary
+	                    .requestMatchers("/user/**").hasAuthority("user")
+	                    .anyRequest().authenticated())
+	            .exceptionHandling()
+	                .authenticationEntryPoint(jwtAuthenticationEntryPoint)  // Handles 401 Unauthorized
+	                .accessDeniedHandler(customAccessDeniedHandler)  // Handles 403 Forbidden
+	            .and()
+	            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // JWT filter
+
+	    return http.build();
 	}
+
 }

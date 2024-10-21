@@ -26,8 +26,7 @@ public class AuthController {
 
 	@Autowired
 	private UserRegisterService userRegisterService;
-	@Autowired
-	private AuthService authService;
+	
 	@Autowired
 	private LoginService loginService;
 
@@ -43,15 +42,4 @@ public class AuthController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(loginService.loginUser(user.getUsername(), user.getPassword()));
 	}
 
-	@PostMapping("/addRole")
-	public ResponseEntity<?> getUserDetails(@RequestBody @Valid UserRole userRole, BindingResult bindingResult) {
-
-		return ResponseEntity.status(HttpStatus.OK).body(authService.addUserRole(userRole));
-	}
-
-	@PostMapping("/assign-role")
-	public ResponseEntity<String> assignRoleToUser(@RequestParam Long userId, @RequestParam Long roleId) {
-		authService.assignRoleToUser(userId, roleId);
-		return ResponseEntity.ok("Role assigned successfully");
-	}
 }
