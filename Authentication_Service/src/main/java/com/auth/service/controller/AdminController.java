@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/auth/admin")
 public class AdminController {
 
 	@Autowired

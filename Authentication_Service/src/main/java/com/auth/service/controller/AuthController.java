@@ -21,7 +21,7 @@ import com.auth.service.service.UserRegisterService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/authenticate")
+@RequestMapping("/auth/authenticate")
 public class AuthController {
 
 	@Autowired

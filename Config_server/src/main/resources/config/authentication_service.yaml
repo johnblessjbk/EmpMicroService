@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: authentication_service
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://localhost:3306/authentication_db
+    username: root
+    password: Jenisha@123
+    driver-class-name: com.mysql.cj.jdbc.Driver 
+server:
+  port: 8083
+
+security:
+  jwt:
+    secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+    expiration-time: 864000000
+
+  
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+      
+management:
+  tracing:
+    sampling:
+      probability: 1.0
