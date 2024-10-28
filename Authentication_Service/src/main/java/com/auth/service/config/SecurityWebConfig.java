@@ -48,11 +48,11 @@ public class SecurityWebConfig {
 
 	    http.csrf().disable()
 	            .authorizeHttpRequests((requests) -> requests
-	                    .requestMatchers("/authenticate/**", "/v3/api-docs/**", "/swagger-ui/**",
+	                    .requestMatchers("/auth/authenticate/**", "/v3/api-docs/**", "/swagger-ui/**",
 	                            "/swagger-resources/**", "/webjars/**", "/webjars/swagger-ui/**")
 	                    .permitAll()
-	                    .requestMatchers("/admin/**").hasAuthority("admin")  // Use ROLE_ prefix if necessary
-	                    .requestMatchers("/user/**").hasAuthority("user")
+	                    .requestMatchers("/auth/admin/**").hasAuthority("admin")  // Use ROLE_ prefix if necessary
+	                    .requestMatchers("/auth/user/**").hasAuthority("user")
 	                    .anyRequest().authenticated())
 	            .exceptionHandling()
 	                .authenticationEntryPoint(jwtAuthenticationEntryPoint)  // Handles 401 Unauthorized

@@ -1,32 +1,6 @@
-server:
-  port: 8060
-
 spring:
   application:
     name: apigateway_app
-
-  cloud:
-    gateway:
-      routes:
-        - id: EMPLOYEE-SERVICE
-          uri: http://localhost:8082  
-          predicates:
-            - Path=/employee/**
-        - id: DEPARTMENT-SERVICE
-          uri: http://localhost:8081  
-          predicates:
-            - Path=/department/**
-        - id: AUTHENTICATION_SERVICE
-          uri: http://localhost:8083  
-          predicates:
-            - Path=/auth/**
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+  config:
+    import:
+    - "optional:configserver:http://localhost:8088" 
