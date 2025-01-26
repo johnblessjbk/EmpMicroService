@@ -1,5 +1,7 @@
 package com.auth.service.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,4 +35,9 @@ public class AuthService {
 	        user.getRoles().add(role);
 	        authRepository.save(user);
 	    }
+
+	public List<UserRole> getAllRoleList() {
+
+	return 	userRoleRepository.findAll();
+	}
 }
