@@ -1,4 +1,5 @@
 package com.auth.service.service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.auth.service.dto.LoginResponse;
+import com.auth.service.dto.TokenRequest;
 import com.auth.service.entity.UserLogin;
 import com.auth.service.jwtauth.C_UserDetailsService;
 import com.auth.service.jwtauth.JwtTokenUtil;
@@ -20,49 +22,42 @@ import java.util.stream.Collectors;
 
 @Service
 public class LoginService {
-	private final Logger log=LoggerFactory.getLogger(LoginService.class);
+	private final Logger log = LoggerFactory.getLogger(LoginService.class);
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private C_UserDetailsService userDetailsService;
+	@Autowired
+	private C_UserDetailsService userDetailsService;
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private AuthRepository userLoginRepository;
-  
+	@Autowired
+	private AuthRepository userLoginRepository;
 
-    public LoginResponse loginUser(String username, String password) throws Exception {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
-        );
+	public boolean isTokenValid(String token,TokenRequest userDetails) {
+		return jwtTokenUtil.checkTokenValid(token,userDetails);
+	}
 
-        // Load user details
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+	public LoginResponse loginUser(String username, String password) throws Exception {
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-        // Generate JWT token
-        String jwtToken = jwtTokenUtil.generateToken(userDetails);
-        Date expiryDate = jwtTokenUtil.extractExpiration(jwtToken);
+		// Load user details
+		final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        // Fetch the user from the repository
-        UserLogin userLogin = userLoginRepository.findByUsername(username)
-                .orElseThrow(() -> new Exception("User not found"));
+		// Generate JWT token
+		String jwtToken = jwtTokenUtil.generateToken(userDetails);
+		Date expiryDate = jwtTokenUtil.extractExpiration(jwtToken);
 
-        // Get role names
-        List<String> roles = userLogin.getRoles().stream()
-                .map(role -> role.getRolename())
-                .collect(Collectors.toList());
+		// Fetch the user from the repository
+		UserLogin userLogin = userLoginRepository.findByUsername(username)
+				.orElseThrow(() -> new Exception("User not found"));
 
-        // Create and return the login response
-        return new LoginResponse(
-                userLogin.getId(),
-                userLogin.getUsername(),
-                jwtToken,
-                roles,
-                expiryDate
-        );
-    }
+		// Get role names
+		List<String> roles = userLogin.getRoles().stream().map(role -> role.getRolename()).collect(Collectors.toList());
+
+		// Create and return the login response
+		return new LoginResponse(userLogin.getId(), userLogin.getUsername(), jwtToken, roles, expiryDate);
+	}
 }

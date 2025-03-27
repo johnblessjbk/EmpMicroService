@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.auth.service.dto.TokenRequest;
+
 @Service
 public class JwtTokenUtil {
 	@Value("${security.jwt.secret-key}")
@@ -60,6 +62,10 @@ public class JwtTokenUtil {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+    public boolean checkTokenValid(String token, TokenRequest userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }

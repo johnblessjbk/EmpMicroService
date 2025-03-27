@@ -7,23 +7,29 @@ spring:
 
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true  # Auto-register routes for Eureka services
+          lower-case-service-id: true  # Use lowercase service names
       routes:
         - id: EMPLOYEE-SERVICE
-          uri: http://localhost:8082  
+          uri: lb://EMPLOYEE-SERVICE  # Eureka will resolve this
           predicates:
             - Path=/employee/**
         - id: DEPARTMENT-SERVICE
-          uri: http://localhost:8081  
+          uri: lb://DEPARTMENT-SERVICE  
           predicates:
             - Path=/department/**
         - id: AUTHENTICATION_SERVICE
-          uri: http://localhost:8083  
+          uri: lb://AUTHENTICATION-SERVICE  
           predicates:
             - Path=/auth/**
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true  # Required to fetch service list from Eureka
 
 management:
   endpoints:
