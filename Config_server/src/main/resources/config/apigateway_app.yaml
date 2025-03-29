@@ -25,8 +25,8 @@ spring:
           filters:
             - AuthenticationFilter
        
-        - id: AUTHENTICATION-SERVICE
-          uri: lb://AUTHENTICATION-SERVICE  # Must match Eureka registration exactly
+        - id: AUTH-SERVICE
+          uri: lb://AUTH-SERVICE  # Must match Eureka registration exactly
           predicates:
              - Path=/auth/**
           #filters:
