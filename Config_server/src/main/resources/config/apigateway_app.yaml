@@ -16,14 +16,21 @@ spring:
           uri: lb://EMPLOYEE-SERVICE  # Eureka will resolve this
           predicates:
             - Path=/employee/**
+          filters:
+            - AuthenticationFilter
         - id: DEPARTMENT-SERVICE
           uri: lb://DEPARTMENT-SERVICE  
           predicates:
             - Path=/department/**
-        - id: AUTHENTICATION_SERVICE
-          uri: lb://AUTHENTICATION-SERVICE  
+          filters:
+            - AuthenticationFilter
+       
+        - id: AUTHENTICATION-SERVICE
+          uri: lb://AUTHENTICATION-SERVICE  # Must match Eureka registration exactly
           predicates:
-            - Path=/auth/**
+             - Path=/auth/**
+          #filters:
+          #  - AuthenticationFilter
 
 eureka:
   client:

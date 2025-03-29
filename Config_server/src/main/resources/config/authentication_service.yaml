@@ -1,6 +1,6 @@
 spring:
   application:
-    name: authentication_service
+    name: authentication-service
   jpa:
     hibernate:
       ddl-auto: update
@@ -10,7 +10,7 @@ spring:
     password: Jenisha@123
     driver-class-name: com.mysql.cj.jdbc.Driver 
 server:
-  port: 8083
+  port: 8084
 
 security:
   jwt:
